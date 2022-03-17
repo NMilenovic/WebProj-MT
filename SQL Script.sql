@@ -1,0 +1,1 @@
+INSERT INTO [Muzika].[dbo].[Korisnici] (Username) VALUES ('Auto');
