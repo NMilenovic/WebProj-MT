@@ -456,16 +456,6 @@ export class GlavnaForma {
 
 
     //ostale funckije
-    disable() {
-        var dugme = this.cont.querySelector(".usernamePotvrda");
-        dugme.setAttribute("disabled", "disabled");
-
-        var dugme2 = this.cont.querySelector(".noviUser");
-        dugme2.setAttribute("disabled", "disabled");
-
-        var ie = this.cont.querySelector(".usernameInput");
-        ie.setAttribute("disabled", "disabled")
-    }
     updateIzdavac() {
         var se = this.cont.querySelector(".izdavacSelect");
         var se1 = this.cont.querySelector(".seAlbumIzdavac");
