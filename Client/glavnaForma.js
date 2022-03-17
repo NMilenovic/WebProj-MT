@@ -1,7 +1,6 @@
 import { Izdavac } from "./izdavac.js";
 import { Izvodjac } from "./izvodjac.js";
 import { Album } from "./album.js";
-import { Korisnik } from "./korisnik.js";
 
 export class GlavnaForma {
     constructor(korisnik) {
@@ -214,46 +213,6 @@ export class GlavnaForma {
 
     //fetch funckije
 
-    dodajKorisnika() {
-        var username = this.cont.querySelector(".usernameInput").value;
-        if (!username) {
-            alert("Morate uneti novi username!");
-            return;
-        }
-        var flag = false;
-            this.listaKorisnika.forEach(p =>{
-                if(p.username == username)
-                    {
-                        flag = true;
-                    }
-            });
-        
-        if(flag == true)
-        {
-            alert("Korisnik vec postoji!");
-            return;
-        }
-
-        var data = JSON.stringify({
-            "username": username
-        });
-
-        fetch("https://localhost:5001/Korisnik/DodajKorisnika", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: data
-        }).then(p => {
-            if (p.ok) {
-                alert("Korisnik je dodat!");
-                this.updateKorisnik();
-            }
-            else
-                alert("Doslo je do greske prilikom dodavanja novog korisnika, pokusajte opet.");
-        })
-    }
-
     ucitajIzdavace() {
         fetch("https://localhost:5001/Izdavac/VratiIzdavace/" + this.korisnik.id)
             .then(p => {
@@ -271,6 +230,11 @@ export class GlavnaForma {
         var naziv = this.cont.querySelector(".ieIzdavacInput").value;
         if (!naziv) {
             alert("Morate uneti naziv izdavaca pre dodavanja!");
+            return;
+        }
+        if(String(naziv).length > 50)
+        {
+            alert("Predugacak naziv");
             return;
         }
         var flag = false;
@@ -328,6 +292,11 @@ export class GlavnaForma {
             alert("Morate uneti ime novog izvodjaca pre dodavanja");
             return;
         }
+        if(String(naziv).length > 50)
+        {
+            alert("Predugacak naziv");
+            return;
+        }
         var flag = false;
             this.listaIzvodjaca.forEach(p =>{
                 if(p.naziv == naziv)
@@ -377,6 +346,11 @@ export class GlavnaForma {
         }
         if (!nalbum) {
             alert("Unesite naziv albuma!");
+            return;
+        }
+        if(String(nalbum).length > 50)
+        {
+            alert("Predugacak naziv");
             return;
         }
         if (!zanr) {
@@ -505,31 +479,4 @@ export class GlavnaForma {
         })
     }
 
-    updateKorisnik() {
-        var se = this.cont.querySelector(".korisnikSelect");
-
-        while (se.firstChild != null) {
-            se.removeChild(se.firstChild);
-        }
-
-        this.listaKorisnika = [];
-        fetch("https://localhost:5001/Korisnik/VratiKorisnike")
-            .then(p => {
-                p.json().then(korisnici => {
-                    korisnici.forEach(korisnik => {
-                        var k = new Korisnik(korisnik.id, korisnik.username);
-                        this.listaKorisnika.push(k);
-                    });
-                    let op;
-                    this.listaKorisnika.forEach(p => {
-                        op = document.createElement("option");
-                        op.innerHTML = p.username;
-                        op.value = p.id;
-                        se.appendChild(op);
-                    })
-                });
-
-
-            })
-    }
 }
