@@ -154,6 +154,9 @@ export class GlavnaForma {
         se.className = "seAlbumIzdavac";
         host.appendChild(se);
 
+        var b = document.createElement("br");
+        host.appendChild(b);
+
         l = document.createElement("label");
         l.innerHTML = "Izvođač:";
         host.appendChild(l);

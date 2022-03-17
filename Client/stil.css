@@ -9,6 +9,10 @@ body{
     display: flex;
     border: 1px solid white;
 }
+
+select{
+    max-width:100px;
+}
 .sideForm{
     border: 1px solid black;
     background-color: #190061;
@@ -28,5 +32,6 @@ body{
 .album{
     width: 200px;
     height: 115px;
+    max-height: 115px;
     flex-grow: 1;
 }
