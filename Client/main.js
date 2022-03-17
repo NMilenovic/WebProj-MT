@@ -8,8 +8,11 @@ fetch("https://localhost:5001/Korisnik/VratiKorisnike")
             var k = new Korisnik(korisnik.id,korisnik.username);
             listaKorisnika.push(k);
         });
-        var gf = new GlavnaForma(listaKorisnika);
-        gf.crtaj(document.body);
+        listaKorisnika.forEach(p =>{
+            var gf = new GlavnaForma(p);
+            gf.crtaj(document.body);
+        })
+        
     })
 })
 

@@ -4,14 +4,13 @@ import { Album } from "./album.js";
 import { Korisnik } from "./korisnik.js";
 
 export class GlavnaForma {
-    constructor(listaKorisnika) {
-        this.listaKorisnika = listaKorisnika;
+    constructor(korisnik) {
+        this.korisnik = korisnik;
         this.listaIzdavaca = [];
         this.listaIzvodjaca = [];
-        this.trenutniKorisnik = null;
         this.cont = null;
         this.listaAlbuma = [];
-        this.zanrovi = ["Rep", "Rock", "Metal", "Pop", "Jazz"];
+        this.zanrovi = ["Rep", "Rock", "Metal", "Pop", "Jazz","Elektronska muzika","Klasicna muzika"];
     }
     //draw funckije
     crtaj(host) {
@@ -35,8 +34,6 @@ export class GlavnaForma {
     crtajSideForm(host) {
         if (!host)
             throw new Error("Roditeljski element ne postoji");
-        let userInput = document.createElement("div");
-        userInput.className = "userInput";
         let izdavacInput = document.createElement("div");
         izdavacInput.className = "izdavacInput";
         let izvodjacInput = document.createElement("div");
@@ -45,67 +42,15 @@ export class GlavnaForma {
         albumInput.className = "albumInput";
         let izmeniInput = document.createElement("div");
         izmeniInput.className = "izmeniInput";
-        var niz = [userInput, izdavacInput, izvodjacInput, albumInput, izmeniInput];
+        var niz = [izdavacInput, izvodjacInput, albumInput, izmeniInput];
 
         niz.forEach(p => {
             host.appendChild(p);
         });
 
-        this.crtajUser(userInput);
         this.crtajIzdavac(izdavacInput);
         this.crtajIzvodjac(izvodjacInput);
         this.crtajAlbumInput(albumInput);
-    }
-
-    crtajUser(host) {
-        if (!host)
-            throw new Error("Roditeljski elemnt ne postoji");
-        let l = document.createElement("label");
-        l.innerHTML = "Izaberite vaše korisničko ime:";
-        host.appendChild(l);
-
-        let se = document.createElement("select");
-        se.className = "korisnikSelect"
-        host.appendChild(se);
-
-        let op;
-        this.listaKorisnika.forEach(p => {
-            op = document.createElement("option");
-            op.innerHTML = p.username;
-            op.value = p.id;
-            se.appendChild(op);
-        })
-
-        var btnUsernamePotvrda = document.createElement("button");
-        btnUsernamePotvrda.className = "usernamePotvrda";
-        btnUsernamePotvrda.innerHTML = "Potvrdi izbor";
-        btnUsernamePotvrda.onclick = (ev) => {
-            this.trenutniKorisnik = this.cont.querySelector(".korisnikSelect").value;
-            this.disable();
-            this.ucitajIzdavace();
-            this.ucitajIzvodjace();
-
-        }
-        host.appendChild(btnUsernamePotvrda);
-        var b = document.createElement("br");
-        host.appendChild(b);
-
-        l = document.createElement("label");
-        l.innerHTML = "Ili unesite novo korisničko ime";
-        host.appendChild(l);
-
-        var ie = document.createElement("input");
-        ie.className = "usernameInput";
-        host.appendChild(ie);
-
-        var btnNoviUser = document.createElement("button");
-        btnNoviUser.className = "noviUser";
-        btnNoviUser.innerHTML = "Dodaj"
-        btnNoviUser.onclick = (ev) => {
-            this.dodajKorisnika();
-
-        }
-        host.appendChild(btnNoviUser);
     }
 
     crtajIzdavac(host) {
@@ -145,6 +90,8 @@ export class GlavnaForma {
             this.dodajIzdavaca();
         }
         host.appendChild(btnDodajIzdavaca);
+
+        this.ucitajIzdavace();
 
 
     }
@@ -186,6 +133,8 @@ export class GlavnaForma {
             this.dodajIzvodjaca();
         }
         host.appendChild(btnDodajIzvodjaca);
+
+        this.ucitajIzvodjace();
     }
 
     crtajAlbumInput(host) {
@@ -306,7 +255,7 @@ export class GlavnaForma {
     }
 
     ucitajIzdavace() {
-        fetch("https://localhost:5001/Izdavac/VratiIzdavace/" + this.trenutniKorisnik)
+        fetch("https://localhost:5001/Izdavac/VratiIzdavace/" + this.korisnik.id)
             .then(p => {
                 p.json().then(izdavaci => {
                     izdavaci.forEach(izdavac => {
@@ -340,7 +289,7 @@ export class GlavnaForma {
         var data = JSON.stringify({
             "naziv": naziv
         });
-        fetch("https://localhost:5001/Izdavac/DodajIzdavaca/" + this.trenutniKorisnik, {
+        fetch("https://localhost:5001/Izdavac/DodajIzdavaca/" + this.korisnik.id, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -361,7 +310,7 @@ export class GlavnaForma {
 
     }
     ucitajIzvodjace() {
-        fetch("https://localhost:5001/Izvodjac/VratiIzvodjace/" + this.trenutniKorisnik)
+        fetch("https://localhost:5001/Izvodjac/VratiIzvodjace/" + this.korisnik.id)
             .then(p => {
                 p.json().then(izvodjaci => {
                     izvodjaci.forEach(izvodjac => {
@@ -395,7 +344,7 @@ export class GlavnaForma {
         var data = JSON.stringify({
             "naziv": naziv
         });
-        fetch("https://localhost:5001/Izvodjac/DodajIzvodjaca/" + this.trenutniKorisnik, {
+        fetch("https://localhost:5001/Izvodjac/DodajIzvodjaca/" + this.korisnik.id, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -448,7 +397,7 @@ export class GlavnaForma {
                 "zanr": this.zanrovi[zanr],
                 "godinaIzdanja": parseInt(god)
             });
-        fetch("https://localhost:5001/Album/DodajAlbum/" + this.trenutniKorisnik + "/" + izv + "/" + ik, {
+        fetch("https://localhost:5001/Album/DodajAlbum/" + this.korisnik.id + "/" + izv + "/" + ik, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -471,7 +420,7 @@ export class GlavnaForma {
         while (mf.firstChild != null)
             mf.removeChild(mf.firstChild)
 
-        fetch("https://localhost:5001/Album/VratiAlbumIzdavac/" + this.trenutniKorisnik + "/" + i)
+        fetch("https://localhost:5001/Album/VratiAlbumIzdavac/" + this.korisnik.id+ "/" + i)
             .then(p => {
                 p.json().then(albumi => {
                     albumi.forEach(album => {
@@ -491,7 +440,7 @@ export class GlavnaForma {
         while (mf.firstChild != null)
             mf.removeChild(mf.firstChild);
         var i = this.cont.querySelector(".izvodjacSelect").value;
-        fetch("https://localhost:5001/Album/VratiAlbumIzvodjac/" + this.trenutniKorisnik + "/" + i)
+        fetch("https://localhost:5001/Album/VratiAlbumIzvodjac/" + this.korisnik.id + "/" + i)
             .then(p => {
                 p.json().then(albumi => {
                     albumi.forEach(album => {
@@ -525,8 +474,8 @@ export class GlavnaForma {
         while (se.firstChild != null)
             se.removeChild(se.firstChild);
 
-        while (se.firstChild != null)
-            se1.removeChild(se.firstChild);
+        while (se1.firstChild != null)
+            se1.removeChild(se1.firstChild);
 
         this.listaIzdavaca.forEach(p => {
             op = document.createElement("option");
